@@ -26,12 +26,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/items")
 public class ItemController {
+    public static final String USER_ID_HEADER = "X-Sharer-User-Id";
     private final ItemService itemService;
     private final ItemMapper mapper;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ItemDto> findAll(@RequestHeader(name = "X-Sharer-User-Id") Long userId) {
+    public List<ItemDto> findAll(@RequestHeader(USER_ID_HEADER) Long userId) {
         return itemService
                 .getAllItems(userId)
                 .stream()
@@ -60,7 +61,7 @@ public class ItemController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ItemDto saveUser(@RequestBody @Valid ItemDto item,
-                            @RequestHeader(name = "X-Sharer-User-Id") Long userId) {
+                            @RequestHeader(USER_ID_HEADER) Long userId) {
         Item newItem = mapper.map(item);
         Item saved = itemService.saveItem(newItem, userId);
         return mapper.map(saved);
@@ -70,7 +71,7 @@ public class ItemController {
     @ResponseStatus(HttpStatus.OK)
     public ItemDto updateItem(@PathVariable Long itemId,
                               @RequestBody @Valid UpdateItemDto item,
-                              @RequestHeader(name = "X-Sharer-User-Id") Long userId) {
+                              @RequestHeader(USER_ID_HEADER) Long userId) {
         Item updatedItem = itemService.updateItem(itemId, item, userId);
         return mapper.map(updatedItem);
     }
