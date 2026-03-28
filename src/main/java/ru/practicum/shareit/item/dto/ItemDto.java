@@ -7,10 +7,10 @@ import lombok.Data;
 @Data
 public class ItemDto {
     private Long id;
-    @NotBlank
+    @NotBlank(message = "Обязательное поле")
     private String name;
-    @NotBlank
+    @NotBlank(message = "Обязательное поле")
     private String description;
-    @NotNull
+    @NotNull(message = "Обязательное поле")
     private Boolean available;
 }

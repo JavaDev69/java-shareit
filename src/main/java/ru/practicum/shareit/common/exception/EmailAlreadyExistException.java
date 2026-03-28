@@ -11,6 +11,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.CONFLICT)
 public class EmailAlreadyExistException extends ShareItException {
     public EmailAlreadyExistException(String email) {
-        super("Email already exists: " + email);
+        super("Данный email уже занят: " + email);
     }
 }

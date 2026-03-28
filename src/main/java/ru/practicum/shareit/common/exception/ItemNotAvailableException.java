@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @project java-shareit
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class UserNotSpecifiedException extends ShareItException {
-    public UserNotSpecifiedException() {
-        super("Пользователь не задан.");
+public class ItemNotAvailableException extends ShareItException {
+    public ItemNotAvailableException() {
+        super("Вещь недоступна для бронирования.");
     }
 }

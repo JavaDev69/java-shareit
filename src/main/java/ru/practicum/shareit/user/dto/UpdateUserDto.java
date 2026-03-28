@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class UpdateUserDto {
     private String name;
-    @Email
+    @Email(message = "Некорректный формат адреса электронной почты.")
     private String email;
 
     public boolean hasName() {
