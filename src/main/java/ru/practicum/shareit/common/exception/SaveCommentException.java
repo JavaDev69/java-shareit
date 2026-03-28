@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @created 08.03.2026 - 23:52
  * @project java-shareit
  */
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class NotFoundException extends ShareItException {
-    public NotFoundException(String message) {
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class SaveCommentException extends ShareItException {
+    public SaveCommentException(String message) {
         super(message);
     }
 
-    public NotFoundException(String message, Object... params) {
+    public SaveCommentException(String message, String... params) {
         this(String.format(message, params));
     }
 }

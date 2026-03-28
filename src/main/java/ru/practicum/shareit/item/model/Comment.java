@@ -1,5 +1,6 @@
-package ru.practicum.shareit.request.model;
+package ru.practicum.shareit.item.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -20,6 +21,11 @@ import ru.practicum.shareit.user.model.User;
 import java.time.Instant;
 import java.util.Objects;
 
+/**
+ * @author Andrew Vilkov
+ * @created 26.03.2026 - 22:20
+ * @project java-shareit
+ */
 @Getter
 @Setter
 @ToString
@@ -27,16 +33,22 @@ import java.util.Objects;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @Entity
-@Table(name = "item_requests")
-public class ItemRequest {
+@Table(name = "comments")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String description;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "requestor_id")
+    @Column(nullable = false)
+    private String text;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id", nullable = false)
     @ToString.Exclude
-    private User requestor;
+    private Item item;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", nullable = false)
+    @ToString.Exclude
+    private User author;
+    @Column(nullable = false)
     private Instant created;
 
     @Override
@@ -46,8 +58,8 @@ public class ItemRequest {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        ItemRequest that = (ItemRequest) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
+        Comment comment = (Comment) o;
+        return getId() != null && Objects.equals(getId(), comment.getId());
     }
 
     @Override

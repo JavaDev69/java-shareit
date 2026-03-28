@@ -1,7 +1,14 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.common.exception.EmailAlreadyExistException;
+import ru.practicum.shareit.common.exception.NotFoundException;
+import ru.practicum.shareit.common.exception.ShareItException;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.dto.UpdateUserDto;
 import ru.practicum.shareit.user.model.User;
@@ -15,6 +22,8 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
+@Log4j2
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
@@ -25,28 +34,47 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(Long userId) {
-        return userRepository.findById(userId);
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь с id=%d не найден.", userId));
     }
 
     @Override
+    @Transactional
     public User saveUser(User user) {
-        return userRepository.create(user);
+        try {
+            return userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            log.error(e.getMessage(), e);
+            if (e.getCause() instanceof ConstraintViolationException ve
+                    && "users_email_key".equals(ve.getConstraintName())) {
+                throw new EmailAlreadyExistException(user.getEmail());
+            }
+            throw new ShareItException("Ошибка сохранения пользователя.");
+        }
     }
 
     @Override
+    @Transactional
     public User updateUser(Long userId, UpdateUserDto user) {
-        User targetUser = userRepository.findById(userId);
+        User targetUser = getUser(userId);
         if (user.hasName()) {
             targetUser.setName(user.getName());
         }
-        if (user.hasEmail()) {
+        if (user.hasEmail() && !user.getEmail().equals(targetUser.getEmail())) {
+            boolean isNonUniqEmail = userRepository.existsUserByEmail(user.getEmail());
+            if (isNonUniqEmail) {
+                throw new EmailAlreadyExistException(user.getEmail());
+            }
             targetUser.setEmail(user.getEmail());
         }
-        return userRepository.update(targetUser);
+
+        return userRepository.save(targetUser);
     }
 
+
     @Override
+    @Transactional
     public void deleteUser(Long userId) {
-        userRepository.delete(userId);
+        userRepository.deleteById(userId);
     }
 }

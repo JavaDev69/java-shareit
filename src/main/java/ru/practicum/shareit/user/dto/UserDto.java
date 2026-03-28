@@ -7,9 +7,9 @@ import lombok.Data;
 @Data
 public class UserDto {
     private Long id;
-    @NotBlank
+    @NotBlank(message = "Обязательное поле")
     private String name;
-    @Email
-    @NotBlank
+    @Email(message = "Некорректный формат адреса электронной почты.")
+    @NotBlank(message = "Обязательное поле")
     private String email;
 }
