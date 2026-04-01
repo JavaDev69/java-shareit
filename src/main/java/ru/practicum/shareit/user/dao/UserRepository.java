@@ -1,22 +1,16 @@
 package ru.practicum.shareit.user.dao;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.user.model.User;
-
-import java.util.List;
 
 /**
  * @author Andrew Vilkov
  * @created 08.03.2026 - 14:29
  * @project java-shareit
  */
-public interface UserRepository {
-    User create(User user);
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    List<User> findAll();
-
-    User findById(Long userId);
-
-    User update(User user);
-
-    void delete(Long id);
+    boolean existsUserByEmail(String email);
 }
