@@ -54,7 +54,6 @@ public class BookingServiceImpl implements BookingService {
         validateItemAvailability(item);
 
         if (approved) {
-            item.setAvailable(false);
             itemRepository.save(item);
             booking.setStatus(BookingStatus.APPROVED);
         } else {

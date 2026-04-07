@@ -13,6 +13,7 @@ import ru.practicum.shareit.item.dto.ResponseItemDto;
 import ru.practicum.shareit.item.dto.ResponseItemWithCommentDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemWithBookingDate;
+import ru.practicum.shareit.request.dao.RequestRepository;
 
 import java.time.ZoneId;
 
@@ -32,6 +33,8 @@ import java.time.ZoneId;
 public abstract class ItemMapper {
     @Autowired
     BookingRepository bookingRepository;
+    @Autowired
+    RequestRepository requestRepository;
 
     public abstract ResponseItemDto map(Item item);
 
@@ -44,5 +47,7 @@ public abstract class ItemMapper {
     public abstract ResponseItemWithCommentDto mapWithComment(Item item);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "request", expression = "java(item.getRequestId()==null? null : requestRepository.findById(item.getRequestId()).get())")
     public abstract Item map(ItemDto item);
+
 }

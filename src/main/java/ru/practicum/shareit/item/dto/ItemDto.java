@@ -13,4 +13,5 @@ public class ItemDto {
     private String description;
     @NotNull(message = "Обязательное поле")
     private Boolean available;
+    private Long requestId;
 }

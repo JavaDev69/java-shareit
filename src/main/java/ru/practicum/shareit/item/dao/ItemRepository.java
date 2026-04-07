@@ -7,8 +7,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemComment;
+import ru.practicum.shareit.item.model.ItemForRequest;
 import ru.practicum.shareit.item.model.ItemWithBookingDate;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -49,4 +51,5 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             "and it.available=true")
     List<Item> findAllByText(@Param("text") String text);
 
+    List<ItemForRequest> findByRequestIdIn(Collection<Long> requestIds);
 }
