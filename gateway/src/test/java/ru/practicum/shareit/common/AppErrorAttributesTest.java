@@ -48,12 +48,12 @@ class AppErrorAttributesTest {
         MethodArgumentNotValidException ex =
                 new MethodArgumentNotValidException(mock(MethodParameter.class), bindingResult);
 
-        ResponseEntity<Map<String, Object>> response =
+        ResponseEntity<ErrorResponseBody> response =
                 handler.handleMethodArgumentNotValid(ex);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
-        List<String> messages = (List<String>) response.getBody().get("messages");
+        List<String> messages = response.getBody().messages();
         assertThat(messages)
                 .containsExactlyInAnyOrder(
                         "name : must not be blank",
@@ -75,12 +75,12 @@ class AppErrorAttributesTest {
         HandlerMethodValidationException ex = mock(HandlerMethodValidationException.class);
         when(ex.getParameterValidationResults()).thenReturn(List.of(result));
 
-        ResponseEntity<Map<String, Object>> response =
+        ResponseEntity<ErrorResponseBody> response =
                 handler.handleHandlerMethodValidation(ex);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
-        List<String> messages = (List<String>) response.getBody().get("messages");
+        List<String> messages = response.getBody().messages();
         assertThat(messages).containsExactly("userId : must be positive");
     }
 
@@ -98,10 +98,10 @@ class AppErrorAttributesTest {
         HandlerMethodValidationException ex = mock(HandlerMethodValidationException.class);
         when(ex.getParameterValidationResults()).thenReturn(List.of(result));
 
-        ResponseEntity<Map<String, Object>> response =
+        ResponseEntity<ErrorResponseBody> response =
                 handler.handleHandlerMethodValidation(ex);
 
-        List<String> messages = (List<String>) response.getBody().get("messages");
+        List<String> messages = response.getBody().messages();
 
         assertThat(messages)
                 .containsExactly("age : Ошибка валидации параметра");
@@ -119,12 +119,12 @@ class AppErrorAttributesTest {
         ConstraintViolationException ex =
                 new ConstraintViolationException(Set.of(violation));
 
-        ResponseEntity<Map<String, Object>> response =
+        ResponseEntity<ErrorResponseBody> response =
                 handler.handleHandlerMethodValidation(ex);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
-        List<String> messages = (List<String>) response.getBody().get("messages");
+        List<String> messages = response.getBody().messages();
         assertThat(messages).containsExactly("email : must be valid");
     }
 

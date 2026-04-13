@@ -26,7 +26,7 @@ import java.util.Map;
 public class AppErrorAttributes {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorResponseBody> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         log.error("Ошибка валидации тела запроса: {}", ex.getBody());
         List<String> messages = ex.getBindingResult().getAllErrors().stream()
                 .map(error -> {
@@ -37,27 +37,27 @@ public class AppErrorAttributes {
                 })
                 .toList();
 
-        return ResponseEntity.badRequest().body(Map.of("messages", messages));
+        return ResponseEntity.badRequest().body(new ErrorResponseBody(400, messages));
     }
 
     @ExceptionHandler(HandlerMethodValidationException.class)
-    public ResponseEntity<Map<String, Object>> handleHandlerMethodValidation(HandlerMethodValidationException ex) {
+    public ResponseEntity<ErrorResponseBody> handleHandlerMethodValidation(HandlerMethodValidationException ex) {
         log.error("Ошибка валидации параметров запроса", ex);
         List<String> messages = ex.getParameterValidationResults().stream()
                 .flatMap(result -> mapParameterValidationResult(result).stream())
                 .toList();
 
-        return ResponseEntity.badRequest().body(Map.of("messages", messages));
+        return ResponseEntity.badRequest().body(new ErrorResponseBody(400, messages));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Map<String, Object>> handleHandlerMethodValidation(ConstraintViolationException ex) {
+    public ResponseEntity<ErrorResponseBody> handleHandlerMethodValidation(ConstraintViolationException ex) {
         log.error("Ошибка валидации параметров запроса", ex);
         List<String> messages = ex.getConstraintViolations().stream()
                 .map(this::mapParameterValidationResult)
                 .toList();
 
-        return ResponseEntity.badRequest().body(Map.of("messages", messages));
+        return ResponseEntity.badRequest().body(new ErrorResponseBody(400, messages));
     }
 
     @ExceptionHandler(ShareItException.class)
