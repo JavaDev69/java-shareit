@@ -1,0 +1,13 @@
+package ru.practicum.shareit.item.model;
+
+/**
+ * @author Andrew Vilkov
+ * @created 26.03.2026 - 21:46
+ * @project java-shareit
+ */
+public record ItemForRequest(
+        Long id,
+        Long ownerId,
+        String name) {
+
+}
